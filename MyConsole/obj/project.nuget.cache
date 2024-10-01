@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "X6IkA6pINRXCA3ybj6apSV7s1XAu4J9hiM0560/E/AISI7+iUDDM01DVnniazRoWATvgM5YnQYf8Z+W92i4TRA==",
+  "success": true,
+  "projectFilePath": "C:\\arquitectura_z\\MyConsole\\MyConsole.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\zemog\\.nuget\\packages\\figgle\\0.5.1\\figgle.0.5.1.nupkg.sha512"
+  ],
+  "logs": []
+}

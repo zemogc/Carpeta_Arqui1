@@ -1,0 +1,17 @@
+C:\arquitectura_z\MyConsole\obj\Debug\net7.0\MyConsole.csproj.AssemblyReference.cache
+C:\arquitectura_z\MyConsole\obj\Debug\net7.0\MyConsole.GeneratedMSBuildEditorConfig.editorconfig
+C:\arquitectura_z\MyConsole\obj\Debug\net7.0\MyConsole.AssemblyInfoInputs.cache
+C:\arquitectura_z\MyConsole\obj\Debug\net7.0\MyConsole.AssemblyInfo.cs
+C:\arquitectura_z\MyConsole\obj\Debug\net7.0\MyConsole.csproj.CoreCompileInputs.cache
+C:\arquitectura_z\MyConsole\bin\Debug\net7.0\MyConsole.exe
+C:\arquitectura_z\MyConsole\bin\Debug\net7.0\MyConsole.deps.json
+C:\arquitectura_z\MyConsole\bin\Debug\net7.0\MyConsole.runtimeconfig.json
+C:\arquitectura_z\MyConsole\bin\Debug\net7.0\MyConsole.dll
+C:\arquitectura_z\MyConsole\bin\Debug\net7.0\MyConsole.pdb
+C:\arquitectura_z\MyConsole\bin\Debug\net7.0\Figgle.dll
+C:\arquitectura_z\MyConsole\obj\Debug\net7.0\MyConsole.csproj.CopyComplete
+C:\arquitectura_z\MyConsole\obj\Debug\net7.0\MyConsole.dll
+C:\arquitectura_z\MyConsole\obj\Debug\net7.0\refint\MyConsole.dll
+C:\arquitectura_z\MyConsole\obj\Debug\net7.0\MyConsole.pdb
+C:\arquitectura_z\MyConsole\obj\Debug\net7.0\MyConsole.genruntimeconfig.cache
+C:\arquitectura_z\MyConsole\obj\Debug\net7.0\ref\MyConsole.dll

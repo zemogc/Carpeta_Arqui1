@@ -1,32 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace MyLibrary;
 
-namespace MyLibrary
+public class Product(int id, string name, decimal UnitPrice, int UnitsInStock)
 {
-    public class Product(int id, string name, decimal UnitPrice, int UnitsInStock)
-    {
-    {
-        //Field, Campo, variable
+    //propiedades
+    public int Id => id;
+    public string Name => name;
+    public decimal UnitPrice => UnitPrice;
+    public int UnitsInStock => UnitsInStock;
 
-        //propiedades
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public decimal UnitPrice { get; set; }
-        public int UnitsInStock { get; set; }
+    public bool Discontinued {get; private set; }
+        Discontinued = true;
 
-        //Constructor 
-        public Product(int id, string name, decimal UnitPrice, int UnitsInStock) 
-        {
-            Id = id;
-            Name = name;
-            UnitPrice = UnitPrice;
-            UnitsInStock = UnitsInStock;
+    public bool GetStatus() => Discontinued;
 
-        }
-            
-    }
+
 }
+
+

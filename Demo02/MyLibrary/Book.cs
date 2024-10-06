@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace MyLibrary
 {
-    internal class Book
+    internal class Book : Product
     {
+        public Book(int id)
     }
 }

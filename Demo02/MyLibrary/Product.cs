@@ -13,7 +13,7 @@ public class Product(int id, string name, decimal UnitPrice, int UnitsInStock)
 
     public bool GetStatus() => Discontinued;
 
-
+    //minuto 53:32
 }
 
 

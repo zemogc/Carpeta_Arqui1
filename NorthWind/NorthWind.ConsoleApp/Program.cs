@@ -7,8 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 HostApplicationBuilder builder = new HostApplicationBuilder();  
 var Builder = Host.CreateApplicationBuilder();
-Builder.Services.AddSingleton<IUserActionWriter, ConsoleWriter>();
-Builder.Services.AddSingleton<IUserActionWriter, DebugWriter>();
+Builder.Services.AddConsoleWriter();
+builder.Services.AddDebugeWriter();
+Builder.Services.AddFileWriter();
 Builder.Services.AddSingleton<AppLogger>();
 Builder.Services.AddSingleton<ProductService>();
 using var AppHost = Builder.Build();

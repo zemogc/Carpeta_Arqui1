@@ -28,8 +28,24 @@ namespace WPFApp
         void CreateTask()
         {
             Task T;
-            Action Code = new Action(ShowMessage);
+            Action Code = new Action(ShowMesage);
             T = new Task(Code);
+            Task T2 = new Task(Code);
+            {
+                MessageBox.Show("Ejecutando una tarea en un método anónimo.");
+            }
+        });
+
+        private void ShowMesage()
+        {
+            throw new NotImplementedException();
+        }
+
+        Task T3 = new Task(
+            delegate
+            {
+                ShowMesage();
+            });
 
         }
         void ShowMessage()

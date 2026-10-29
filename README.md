@@ -92,6 +92,16 @@ Reutiliza `FiggleWriter` de `Demo01/MyLibrary` mediante una referencia de proyec
 
 ![Lección de inyección de dependencias](docs/capturas/leccion.png)
 
+### 📱 En el celular
+
+El menú lateral se pliega en un botón ☰ y todas las páginas se adaptan al ancho de la pantalla.
+
+<p align="center">
+  <img src="docs/capturas/movil-inicio.png" alt="Inicio en el celular" width="280" />
+  &nbsp;&nbsp;
+  <img src="docs/capturas/movil-menu.png" alt="Menú abierto en el celular" width="280" />
+</p>
+
 ### ⚡ WPF: laboratorio de Tasks
 
 Cuatro formas de crear tareas (delegado `Action`, método anónimo, lambda y `Task.Run` + `async/await`). Cada línea indica en qué hilo corrió.

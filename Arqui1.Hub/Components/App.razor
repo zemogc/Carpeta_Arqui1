@@ -17,6 +17,13 @@
     <Routes />
     <ReconnectModal />
     <script src="@Assets["_framework/blazor.web.js"]"></script>
+    <script>
+        // Con la navegación mejorada de Blazor la página no se recarga: cerramos el menú móvil al navegar.
+        Blazor.addEventListener("enhancedload", () => {
+            const toggle = document.getElementById("nav-toggle");
+            if (toggle) toggle.checked = false;
+        });
+    </script>
 </body>
 
 </html>

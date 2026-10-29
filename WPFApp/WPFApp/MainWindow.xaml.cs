@@ -42,11 +42,16 @@ namespace WPFApp
         private async void AsyncAwait_Click(object sender, RoutedEventArgs e)
         {
             AsyncButton.IsEnabled = false;
-            WriteLog("Calculando números primos hasta 2.000.000...");
+            WriteLog("Hilo de UI: lanzo el cálculo y sigo libre.");
 
-            int Primes = await Task.Run(() => CountPrimes(2_000_000));
+            int Primes = await Task.Run(() =>
+            {
+                WriteLog("ThreadPool: contando primos hasta 2.000.000...");
+                return CountPrimes(2_000_000);
+            });
 
-            WriteLog($"Se encontraron {Primes:N0} primos. La UI nunca se congeló.");
+            // Después del await el código vuelve al hilo de UI.
+            WriteLog($"Hilo de UI: {Primes:N0} primos y la ventana nunca se congeló.");
             AsyncButton.IsEnabled = true;
         }
 

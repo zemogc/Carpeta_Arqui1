@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace MyLibrary;
 
-namespace MyLibrary
+// Herencia: un libro es un producto con un autor.
+internal class Book(int id, string name, decimal unitPrice, int unitsInStock, string author)
+    : Product(id, name, unitPrice, unitsInStock)
 {
-    internal class Book : Product
-    {
-        public Book(int id)
-    }
+    public string Author => author;
+
+    public override string ToString() => $"{base.ToString()} | Autor: {Author}";
 }

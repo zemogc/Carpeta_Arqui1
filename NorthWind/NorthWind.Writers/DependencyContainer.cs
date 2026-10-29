@@ -16,14 +16,14 @@ public static class DependencyContainer
         services.AddSingleton<IUserActionWriter, ConsoleWriter>();
         return services;
     }
-    public static IServiceCollection AddDebugeWriter(this IServiceCollection services)
+    public static IServiceCollection AddDebugWriter(this IServiceCollection services)
     {
-        services.AddSingleton<IUserActionWriter, ConsoleWriter>();
+        services.AddSingleton<IUserActionWriter, DebugWriter>();
         return services;
     }
     public static IServiceCollection AddFileWriter(this IServiceCollection services)
     {
-        services.AddSingleton<IUserActionWriter, ConsoleWriter>();
+        services.AddSingleton<IUserActionWriter, FileWriter>();
         return services;
     }
 

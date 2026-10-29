@@ -1,0 +1,84 @@
+@page "/laboratorio/inyeccion"
+@rendermode InteractiveServer
+
+<PageTitle>Inyección de dependencias · Arqui1 Hub</PageTitle>
+
+<div class="eyebrow">🧩 Laboratorio · NorthWind</div>
+<h1 class="page-title">¿Qué writers recibe ProductService?</h1>
+<p class="page-lead">
+    Elige qué implementaciones de <code>IUserActionWriter</code> registrar. El laboratorio arma un
+    <code>ServiceCollection</code> real, resuelve <code>ProductService</code> y muestra a dónde llega cada mensaje.
+</p>
+
+<div class="two-col">
+    <div class="stack">
+        <div class="panel">
+            <h3>1. Registra los servicios</h3>
+            <div class="stack" style="gap:10px">
+                <label class="check"><input type="checkbox" @bind="useConsole" @bind:after="Run" /> AddConsoleWriter()</label>
+                <label class="check"><input type="checkbox" @bind="useDebug" @bind:after="Run" /> AddDebugWriter()</label>
+                <label class="check"><input type="checkbox" @bind="useFile" @bind:after="Run" /> AddFileWriter()</label>
+                <label class="check warn">
+                    <input type="checkbox" @bind="originalBug" @bind:after="Run" />
+                    Reproducir el bug original: los tres métodos registraban ConsoleWriter
+                </label>
+            </div>
+        </div>
+        <div class="panel">
+            <h3>2. Ejecuta el servicio</h3>
+            <div class="form-row" style="margin-bottom:14px">
+                <label class="field">Usuario <input type="text" @bind="user" /></label>
+                <label class="field">Producto <input type="text" @bind="product" /></label>
+            </div>
+            <button class="btn" @onclick="Run">▶ service.Add("@user", "@product")</button>
+        </div>
+        <div class="panel">
+            <h3>Program.cs generado</h3>
+            <pre class="code">@result?.RegistrationCode</pre>
+        </div>
+    </div>
+
+    <div class="stack">
+        @if (result is not null)
+        {
+            <div class="callout @(Healthy ? "ok" : "")">
+                El contenedor entregó <strong>@result.ResolvedWriters</strong> writer(s) a <code>IEnumerable&lt;IUserActionWriter&gt;</code>.
+                @if (originalBug && result.ResolvedWriters > 1)
+                {
+                    <span> Todos son <code>ConsoleWriter</code>: el mensaje se repite en consola y nunca llega al archivo.</span>
+                }
+                else if (result.ResolvedWriters == 0)
+                {
+                    <span> Ningún writer registrado: el servicio se ejecuta pero nadie escribe.</span>
+                }
+            </div>
+
+            <LabOutput Title="🖥️ Consola" Lines="result.For(WriterTarget.Console)" />
+            <LabOutput Title="🐞 Ventana Debug (Visual Studio)" Lines="result.For(WriterTarget.Debug)" />
+            <LabOutput Title="📄 AppLogs.txt" Lines="result.For(WriterTarget.File)" />
+        }
+    </div>
+</div>
+
+@code {
+    private bool useConsole = true;
+    private bool useDebug = true;
+    private bool useFile = true;
+    private bool originalBug;
+    private string user = "Demo";
+    private string product = "Azúcar refinada";
+    private LabResult? result;
+
+    private bool Healthy => result is { ResolvedWriters: > 0 } && !originalBug;
+
+    protected override void OnInitialized() => Run();
+
+    private void Run()
+    {
+        var selected = new List<WriterTarget>();
+        if (useConsole) selected.Add(WriterTarget.Console);
+        if (useDebug) selected.Add(WriterTarget.Debug);
+        if (useFile) selected.Add(WriterTarget.File);
+        result = DependencyLab.Run(selected, originalBug, user, product);
+    }
+}

@@ -8,7 +8,7 @@
 ![C# 14](https://img.shields.io/badge/C%23-14-239120?logo=csharp&logoColor=white)
 ![Blazor](https://img.shields.io/badge/Blazor-Interactive_Server-7c6cff)
 ![Claude](https://img.shields.io/badge/IA-Claude_Opus_5.5-d97757)
-![Pruebas](https://img.shields.io/badge/pruebas-22_pasan-34d399)
+![Pruebas](https://img.shields.io/badge/pruebas-26_pasan-34d399)
 
 ![Inicio de Arqui1 Hub](docs/capturas/inicio.png)
 
@@ -19,7 +19,7 @@
 El repositorio empezó como la carpeta de prácticas del curso: un proyecto por tema, escritos mientras avanzaban las clases. Ahora todos compilan con .NET 10 y además hay un **hub web** que los reúne:
 
 - 📚 **7 lecciones** explicadas, con los puntos clave, el código y el comando para ejecutarlas.
-- 🧪 **Laboratorios interactivos** que usan las bibliotecas reales del repositorio, no copias.
+- 🧪 **4 laboratorios interactivos** que usan las bibliotecas reales del repositorio, no copias: inyección de dependencias, polimorfismo, concurrencia con `Task.WhenAll` y arte ASCII.
 - 🤖 **Tutor IA** con Claude que conoce cada carpeta y su código. Sin API key funciona en modo sin conexión.
 
 ## Arranque rápido
@@ -63,6 +63,18 @@ Elige qué `IUserActionWriter` registrar y mira a dónde llega cada mensaje. El 
 
 Con el bug, los tres `Add*Writer` registraban `ConsoleWriter`: el mensaje salía tres veces en consola y nunca llegaba al archivo.
 
+### 🧱 Nómina polimórfica
+
+Una `List<Employee>` con instancias reales de `Secretary`, `Manager` y `Developer` de `Demo02`. Contrata o despide empleados y mira cómo cada tipo calcula su pago con su propio `override`.
+
+![Laboratorio de polimorfismo](docs/capturas/laboratorio-polimorfismo.png)
+
+### ⚡ Secuencial vs. Task.WhenAll
+
+Cinco operaciones de E/S simuladas, primero una tras otra y después todas a la vez. Las barras muestran en vivo cuándo arranca y termina cada una.
+
+![Laboratorio de concurrencia](docs/capturas/laboratorio-concurrencia.png)
+
 ### 🔤 Arte ASCII
 
 Reutiliza `FiggleWriter` de `Demo01/MyLibrary` mediante una referencia de proyecto: el mismo código que imprime en la consola, ahora en la web.
@@ -103,6 +115,7 @@ Arqui1.Hub/
 ├── Data/LessonCatalog.cs          Las lecciones. Alimentan las páginas y el prompt del tutor
 ├── Services/
 │   ├── DependencyLab.cs           ServiceCollection real con los contratos de NorthWind.Entities
+│   ├── ConcurrencyLab.cs          Ejecución secuencial vs. Task.WhenAll con tiempos medidos
 │   └── Tutor/
 │       ├── ITutorService.cs       Contrato común: respuesta por fragmentos (IAsyncEnumerable)
 │       ├── ClaudeTutorService.cs  SDK oficial de Anthropic, streaming
@@ -126,7 +139,7 @@ Detalles del tutor con Claude:
 dotnet test Arqui1.Hub.Tests
 ```
 
-22 pruebas con xUnit. Entre ellas, la petición que el tutor envía a la API se verifica con un `HttpMessageHandler` falso (modelo, streaming, fallbacks, historial y prompt), así que se prueba sin gastar créditos.
+26 pruebas con xUnit. Entre ellas, la petición que el tutor envía a la API se verifica con un `HttpMessageHandler` falso (modelo, streaming, fallbacks, historial y prompt), así que se prueba sin gastar créditos.
 
 ## Estructura del repositorio
 

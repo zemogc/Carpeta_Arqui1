@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Demo01\MyLibrary\MyLibrary.csproj" />
     <ProjectReference Include="..\NorthWind\NorthWind.Entities\NorthWind.Entities.csproj" />
+    <ProjectReference Include="..\Demo02\MyLibrary\MyLibrary.csproj" />
   </ItemGroup>
 
 </Project>

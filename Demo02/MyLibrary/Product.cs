@@ -1,19 +1,23 @@
 ﻿namespace MyLibrary;
 
-public class Product(int id, string name, decimal UnitPrice, int UnitsInStock)
+// Constructor primario: los parámetros quedan disponibles en toda la clase.
+public class Product(int id, string name, decimal unitPrice, int unitsInStock)
 {
     //propiedades
     public int Id => id;
     public string Name => name;
-    public decimal UnitPrice => UnitPrice;
-    public int UnitsInStock => UnitsInStock;
+    public decimal UnitPrice => unitPrice;
+    public int UnitsInStock => unitsInStock;
 
-    public bool Discontinued {get; private set; }
-        Discontinued = true;
+    // Solo la propia clase puede cambiar el estado.
+    public bool Discontinued { get; private set; }
+
+    public void Discontinue() => Discontinued = true;
 
     public bool GetStatus() => Discontinued;
 
-    //minuto 53:32
+    public decimal GetInventoryValue() => UnitPrice * UnitsInStock;
+
+    public override string ToString() =>
+        $"[{Id}] {Name} - {UnitPrice:C} x {UnitsInStock} uds.{(Discontinued ? " (descontinuado)" : "")}";
 }
-
-

@@ -1,0 +1,61 @@
+@page "/lecciones/{Slug}"
+@inject NavigationManager Navigation
+
+@if (lesson is null)
+{
+    <PageTitle>Lección no encontrada</PageTitle>
+    <h1 class="page-title">Lección no encontrada</h1>
+    <p class="page-lead">No existe una lección llamada <code>@Slug</code>. <a href="">Volver al inicio</a>.</p>
+}
+else
+{
+    <PageTitle>@lesson.Title · Arqui1 Hub</PageTitle>
+
+    <div class="eyebrow">@lesson.Icon Carpeta @lesson.Folder</div>
+    <h1 class="page-title">@lesson.Title</h1>
+    <p class="page-lead">@lesson.Summary</p>
+
+    <div class="tags" style="margin-bottom:24px">
+        @foreach (var concept in lesson.Concepts)
+        {
+            <span class="tag">@concept</span>
+        }
+    </div>
+
+    <div class="two-col">
+        <div class="panel">
+            <h3>Puntos clave</h3>
+            <ul class="keypoints">
+                @foreach (var point in lesson.KeyPoints)
+                {
+                    <li>@point</li>
+                }
+            </ul>
+        </div>
+        <div class="stack">
+            <div class="panel">
+                <h3>Código</h3>
+                <pre class="code">@lesson.Snippet</pre>
+            </div>
+            <div class="panel">
+                <h3>Ejecútalo</h3>
+                <pre class="code terminal">$ @lesson.RunCommand</pre>
+                <div class="btn-row" style="margin-top:14px">
+                    <a class="btn" href="@($"tutor?q={Uri.EscapeDataString($"Explícame la lección \"{lesson.Title}\" con un ejemplo nuevo")}")">🤖 Pedir otra explicación</a>
+                    <a class="btn btn-ghost" href="@SourceUrl" target="_blank" rel="noopener">Ver en GitHub ↗</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public string Slug { get; set; } = string.Empty;
+
+    private Lesson? lesson;
+
+    private string SourceUrl =>
+        $"{LessonCatalog.RepositoryUrl}/tree/master/{lesson!.Folder.Split(' ')[0]}";
+
+    protected override void OnParametersSet() => lesson = LessonCatalog.Find(Slug);
+}

@@ -1,0 +1,52 @@
+﻿@page "/"
+@inject ITutorService Tutor
+
+<PageTitle>Arqui1 Hub</PageTitle>
+
+<section class="hero">
+    <div class="eyebrow">Curso de arquitectura · C# · .NET 10</div>
+    <h1>Aprende .NET <span class="grad">ejecutando el código</span>, no solo leyéndolo</h1>
+    <p>
+        Todas las prácticas del curso en un solo lugar: lecciones explicadas, laboratorios interactivos
+        que usan las bibliotecas reales del repositorio y un tutor con IA que conoce cada carpeta.
+    </p>
+    <div class="btn-row">
+        <a class="btn" href="tutor">🤖 Preguntarle al tutor</a>
+        <a class="btn btn-ghost" href="laboratorio/inyeccion">🧩 Probar la inyección de dependencias</a>
+    </div>
+</section>
+
+<div class="stats">
+    <div class="stat"><div class="stat-value">@LessonCatalog.All.Count</div><div class="stat-label">Lecciones</div></div>
+    <div class="stat"><div class="stat-value">@LessonCatalog.All.Sum(l => l.Concepts.Count)</div><div class="stat-label">Conceptos cubiertos</div></div>
+    <div class="stat"><div class="stat-value">2</div><div class="stat-label">Laboratorios interactivos</div></div>
+    <div class="stat">
+        <div class="stat-value" style="font-size:18px; padding-top:6px">
+            <span class="badge @(Tutor.IsOnline ? "online" : "")"><span class="dot"></span>@Tutor.EngineName</span>
+        </div>
+        <div class="stat-label">Motor del tutor</div>
+    </div>
+</div>
+
+<h2 class="section-title">Lecciones</h2>
+<div class="grid">
+    @foreach (var lesson in LessonCatalog.All)
+    {
+        <a class="card" href="@($"lecciones/{lesson.Slug}")">
+            <div class="card-head">
+                <div class="card-icon">@lesson.Icon</div>
+                <div>
+                    <h3>@lesson.Title</h3>
+                    <div class="folder">@lesson.Folder</div>
+                </div>
+            </div>
+            <p>@lesson.Summary</p>
+            <div class="tags">
+                @foreach (var concept in lesson.Concepts.Take(4))
+                {
+                    <span class="tag">@concept</span>
+                }
+            </div>
+        </a>
+    }
+</div>

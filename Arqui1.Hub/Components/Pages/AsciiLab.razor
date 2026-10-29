@@ -1,0 +1,69 @@
+@page "/laboratorio/ascii"
+@rendermode InteractiveServer
+@using MyLibrary
+
+<PageTitle>Arte ASCII · Arqui1 Hub</PageTitle>
+
+<div class="eyebrow">🔤 Laboratorio · Demo01 + NuGet</div>
+<h1 class="page-title">Arte ASCII con FiggleWriter</h1>
+<p class="page-lead">
+    Esta página usa la clase <code>FiggleWriter</code> de la biblioteca <code>Demo01/MyLibrary</code> mediante
+    una referencia de proyecto. Es el mismo código que imprime en la consola, reutilizado en la web.
+</p>
+
+<div class="panel" style="margin-bottom:18px">
+    <div class="form-row">
+        <label class="field">
+            Texto
+            <input type="text" maxlength="24" @bind="text" @bind:event="oninput" />
+        </label>
+        <label class="field">
+            Fuente
+            <select @bind="fontName">
+                @foreach (var name in Fonts.Keys)
+                {
+                    <option value="@name">@name</option>
+                }
+            </select>
+        </label>
+    </div>
+</div>
+
+<div class="panel" style="margin-bottom:18px">
+    <pre class="code terminal ascii">@Rendered</pre>
+</div>
+
+<div class="panel">
+    <h3>El código detrás</h3>
+    <pre class="code">// Demo01/MyLibrary/FiggleWriter.cs
+public string Render(string message, Figgle.FiggleFont? font = null)
+{
+    return (font ?? Figgle.FiggleFonts.Standard).Render(message);
+}
+
+// Esta página
+var writer = new FiggleWriter();
+string art = writer.Render("@text", Figgle.FiggleFonts.@fontName);</pre>
+</div>
+
+@code {
+    private static readonly Dictionary<string, Figgle.FiggleFont> Fonts = new()
+    {
+        ["Standard"] = Figgle.FiggleFonts.Standard,
+        ["Slant"] = Figgle.FiggleFonts.Slant,
+        ["Big"] = Figgle.FiggleFonts.Big,
+        ["Small"] = Figgle.FiggleFonts.Small,
+        ["Doom"] = Figgle.FiggleFonts.Doom,
+        ["Banner3"] = Figgle.FiggleFonts.Banner3,
+        ["Larry3d"] = Figgle.FiggleFonts.Larry3d,
+        ["Ogre"] = Figgle.FiggleFonts.Ogre,
+    };
+
+    private readonly FiggleWriter writer = new();
+    private string text = "Arqui1";
+    private string fontName = "Slant";
+
+    private string Rendered => string.IsNullOrWhiteSpace(text)
+        ? " "
+        : writer.Render(text, Fonts[fontName]);
+}

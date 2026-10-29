@@ -8,8 +8,8 @@ namespace NorthWind.ConsoleApp.Services
         public void WriteLog(string message)
         {
             UserAction Log = new UserAction("System", message);
-            foreach(var Writer in writers) 
-            Writer.Write(Log);
+            foreach (var Writer in writers)
+                Writer.Write(Log);
         }
     }
 }

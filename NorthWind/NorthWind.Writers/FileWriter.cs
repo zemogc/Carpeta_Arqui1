@@ -13,8 +13,8 @@ namespace NorthWind.Writers
         public void Write(UserAction action)
         {
             File.AppendAllText("AppLogs.txt",
-            string.Format("FileWriter: {0}, {1}, {2}",
-             action.CreatedDateTime, action.User, action.Description));
+            string.Format("FileWriter: {0}, {1}, {2}{3}",
+             action.CreatedDateTime, action.User, action.Description, Environment.NewLine));
         }
     }
 }

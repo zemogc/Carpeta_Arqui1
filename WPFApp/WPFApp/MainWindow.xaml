@@ -5,8 +5,69 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Label x:Name="Messagers"/>
+        Title="Laboratorio de Tasks" Height="520" Width="860"
+        Background="#0F172A" FontFamily="Segoe UI" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="0,0,0,10"/>
+            <Setter Property="Padding" Value="14,10"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#6366F1"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Root" Background="{TemplateBinding Background}" CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Root" Property="Background" Value="#818CF8"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Root" Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.ColumnSpan="2" Margin="0,0,0,18">
+            <TextBlock Text="Laboratorio de Tasks" Foreground="White" FontSize="26" FontWeight="SemiBold"/>
+            <TextBlock Text="Cuatro formas de ejecutar código en segundo plano con la TPL"
+                       Foreground="#94A3B8" FontSize="14"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Margin="0,0,18,0">
+            <Button Content="1. Task + delegado Action" Click="ActionDelegate_Click"/>
+            <Button Content="2. Task + método anónimo" Click="AnonymousMethod_Click"/>
+            <Button Content="3. Task + expresión lambda" Click="Lambda_Click"/>
+            <Button Content="4. Task.Run + async/await" Click="AsyncAwait_Click" x:Name="AsyncButton"/>
+            <Button Content="Limpiar registro" Background="#334155" Click="Clear_Click"/>
+        </StackPanel>
+
+        <Border Grid.Row="1" Grid.Column="1" Background="#1E293B" CornerRadius="10" Padding="4">
+            <ListBox x:Name="Log" Background="Transparent" BorderThickness="0"
+                     Foreground="#E2E8F0" FontFamily="Cascadia Mono, Consolas" FontSize="13"/>
+        </Border>
+
+        <Label x:Name="Messagers" Grid.Row="2" Grid.ColumnSpan="2" Margin="0,14,0,0"
+               Foreground="#A5B4FC" FontSize="13" Content="Listo. Hilo de UI: -"/>
     </Grid>
 </Window>

@@ -77,7 +77,7 @@ public static class LessonCatalog
                 Console.WriteLine(Message);
                 """,
             RunCommand: "dotnet run --project MyConsole",
-            Keywords: ["nuget", "paquete", "package", "figgle", "dependencia", "ascii", "restore"]),
+            Keywords: ["nuget", "paquete", "package", "figgle", "ascii", "restore", "myconsole", "bin", "obj", "git", "gitignore", "csproj", "banner"]),
 
         new(
             Slug: "bibliotecas",
@@ -102,7 +102,7 @@ public static class LessonCatalog
                 FWriter.Write("Hello, Figgle!");
                 """,
             RunCommand: "dotnet run --project Demo01/MyConsoleApp",
-            Keywords: ["biblioteca", "library", "solucion", "solution", "referencia", "reference", "proyecto", "dll", "ensamblado", "writer"]) { LabUrl = "laboratorio/ascii" },
+            Keywords: ["biblioteca", "library", "solucion", "solution", "referencia", "reference", "proyecto", "dll", "ensamblado", "writer", "demo01", "mylibrary", "myconsoleapp", "figglewriter", "messagewriter", "transitiva", "render"]) { LabUrl = "laboratorio/ascii" },
 
         new(
             Slug: "poo",
@@ -173,7 +173,7 @@ public static class LessonCatalog
                 }
                 """,
             RunCommand: "dotnet run --project NorthWind/NorthWind.ConsoleApp",
-            Keywords: ["inyeccion", "dependencia", "dependency", "injection", "di", "contenedor", "container", "servicio", "service", "productservice", "ienumerable", "iuseractionwriter", "useraction", "applogger", "interfaz", "interface", "singleton", "scoped", "transient", "host", "northwind", "writer", "extension", "solid", "capas"]) { LabUrl = "laboratorio/inyeccion" },
+            Keywords: ["inyeccion", "dependencia", "dependency", "injection", "di", "contenedor", "container", "servicio", "service", "productservice", "ienumerable", "iuseractionwriter", "useraction", "applogger", "consolewriter", "debugwriter", "filewriter", "registr", "implementacion", "internal", "interfaz", "interface", "singleton", "scoped", "transient", "host", "northwind", "writer", "extension", "solid", "capas"]) { LabUrl = "laboratorio/inyeccion" },
 
         new(
             Slug: "tareas",

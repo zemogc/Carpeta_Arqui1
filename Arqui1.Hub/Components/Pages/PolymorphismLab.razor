@@ -1,0 +1,113 @@
+@page "/laboratorio/polimorfismo"
+@rendermode InteractiveServer
+@using System.Globalization
+@using MyLibrary
+
+<PageTitle>Polimorfismo · Arqui1 Hub</PageTitle>
+
+<div class="eyebrow">🧱 Laboratorio · Demo02</div>
+<h1 class="page-title">Una lista de Employee, tres formas de pagar</h1>
+<p class="page-lead">
+    La nómina es una <code>List&lt;Employee&gt;</code>, pero cada elemento es un <code>Secretary</code>,
+    <code>Manager</code> o <code>Developer</code> real de <code>Demo02/MyLibrary</code>. Al llamar
+    <code>CalculateMonthlyPayment()</code>, .NET ejecuta la versión del tipo real.
+</p>
+
+<div class="two-col">
+    <div class="stack">
+        <div class="panel">
+            <h3>Contratar</h3>
+            <div class="form-row" style="margin-bottom:12px">
+                <label class="field">Nombre <input type="text" maxlength="20" @bind="newName" @bind:event="oninput" /></label>
+                <label class="field">
+                    Tipo
+                    <select @bind="newType">
+                        <option value="Secretary">Secretary</option>
+                        <option value="Manager">Manager</option>
+                        <option value="Developer">Developer</option>
+                    </select>
+                </label>
+            </div>
+            @if (newType == "Manager")
+            {
+                <label class="field" style="margin-bottom:12px">
+                    Bono del gerente (Manager.Bonus)
+                    <input type="text" @bind="newBonus" />
+                </label>
+            }
+            <button class="btn" @onclick="Hire" disabled="@string.IsNullOrWhiteSpace(newName)">+ Agregar a la nómina</button>
+        </div>
+
+        <div class="panel">
+            <h3>El código que se ejecuta</h3>
+            <pre class="code" style="white-space:pre-wrap">List&lt;Employee&gt; Payroll = [@string.Join(", ", payroll.Select(e => $"new {e.GetType().Name}()"))];
+
+foreach (Employee employee in Payroll)
+{
+    // Despacho dinámico: se llama al override del tipo real.
+    decimal Pay = employee.CalculateMonthlyPayment();
+    int Days = employee.GetPaymentDays();
+}</pre>
+        </div>
+    </div>
+
+    <div class="stack">
+        <div class="panel">
+            <h3>Nómina</h3>
+            <table class="table">
+                <thead>
+                    <tr><th>Nombre</th><th>Tipo real</th><th class="num">Pago mensual</th><th class="num">Días</th><th></th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var employee in payroll)
+                    {
+                        <tr>
+                            <td>@employee.Name</td>
+                            <td><span class="tag">@employee.GetType().Name</span></td>
+                            <td class="num">@employee.CalculateMonthlyPayment().ToString("C0", Culture)</td>
+                            <td class="num">@employee.GetPaymentDays()</td>
+                            <td class="num"><button class="icon-btn" title="Despedir" @onclick="() => payroll.Remove(employee)">✕</button></td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr><td colspan="2">Total mensual</td><td class="num">@payroll.Sum(e => e.CalculateMonthlyPayment()).ToString("C0", Culture)</td><td></td><td></td></tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="callout ok">
+            <strong>@payroll.Count(e => e.GetPaymentDays() != 30)</strong> de @payroll.Count empleados cobran cada 15 días.
+            Solo <code>Developer</code> sobrescribe <code>GetPaymentDays()</code>; los demás usan la versión
+            <code>virtual</code> de <code>Employee</code>.
+        </div>
+    </div>
+</div>
+
+@code {
+    private static readonly CultureInfo Culture = new("es-CO");
+
+    private readonly List<Employee> payroll =
+    [
+        new Secretary { Name = "Maria" },
+        new Manager { Name = "Pedro" },
+        new Developer { Name = "Miguel" },
+    ];
+
+    private string newName = "Laura";
+    private string newType = "Developer";
+    private string newBonus = "1000000";
+
+    private void Hire()
+    {
+        Employee employee = newType switch
+        {
+            "Manager" => new Manager { Bonus = decimal.TryParse(newBonus, out var bonus) ? bonus : 0m },
+            "Secretary" => new Secretary(),
+            _ => new Developer(),
+        };
+        employee.Name = newName.Trim();
+        payroll.Add(employee);
+        newName = string.Empty;
+    }
+}

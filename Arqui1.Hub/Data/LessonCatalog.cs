@@ -10,7 +10,11 @@ public sealed record Lesson(
     IReadOnlyList<string> KeyPoints,
     string Snippet,
     string RunCommand,
-    IReadOnlyList<string> Keywords);
+    IReadOnlyList<string> Keywords)
+{
+    /// <summary>Laboratorio interactivo del hub que acompaña a la lección, si lo hay.</summary>
+    public string? LabUrl { get; init; }
+}
 
 /// <summary>
 /// Las lecciones del curso, tal como están en las carpetas del repositorio.
@@ -98,7 +102,7 @@ public static class LessonCatalog
                 FWriter.Write("Hello, Figgle!");
                 """,
             RunCommand: "dotnet run --project Demo01/MyConsoleApp",
-            Keywords: ["biblioteca", "library", "solucion", "solution", "referencia", "reference", "proyecto", "dll", "ensamblado", "writer"]),
+            Keywords: ["biblioteca", "library", "solucion", "solution", "referencia", "reference", "proyecto", "dll", "ensamblado", "writer"]) { LabUrl = "laboratorio/ascii" },
 
         new(
             Slug: "poo",
@@ -133,7 +137,7 @@ public static class LessonCatalog
                 Employee Maria = new Secretary();
                 """,
             RunCommand: "dotnet run --project Demo02/MyLibrary",
-            Keywords: ["poo", "objeto", "clase", "class", "herencia", "abstract", "abstracta", "polimorfismo", "virtual", "override", "propiedad", "constructor", "primario", "employee", "product", "book", "encapsulamiento"]),
+            Keywords: ["poo", "objeto", "clase", "class", "herencia", "abstract", "abstracta", "polimorfismo", "virtual", "override", "propiedad", "constructor", "primario", "employee", "product", "book", "encapsulamiento"]) { LabUrl = "laboratorio/polimorfismo" },
 
         new(
             Slug: "inyeccion-dependencias",
@@ -169,7 +173,7 @@ public static class LessonCatalog
                 }
                 """,
             RunCommand: "dotnet run --project NorthWind/NorthWind.ConsoleApp",
-            Keywords: ["inyeccion", "dependencia", "dependency", "injection", "di", "contenedor", "container", "servicio", "service", "productservice", "ienumerable", "iuseractionwriter", "useraction", "applogger", "interfaz", "interface", "singleton", "scoped", "transient", "host", "northwind", "writer", "extension", "solid", "capas"]),
+            Keywords: ["inyeccion", "dependencia", "dependency", "injection", "di", "contenedor", "container", "servicio", "service", "productservice", "ienumerable", "iuseractionwriter", "useraction", "applogger", "interfaz", "interface", "singleton", "scoped", "transient", "host", "northwind", "writer", "extension", "solid", "capas"]) { LabUrl = "laboratorio/inyeccion" },
 
         new(
             Slug: "tareas",
@@ -196,7 +200,7 @@ public static class LessonCatalog
                 int Primes = await Task.Run(() => CountPrimes(2_000_000));
                 """,
             RunCommand: "dotnet run --project WPFApp/WPFApp",
-            Keywords: ["task", "tarea", "hilo", "thread", "async", "await", "asincron", "delegado", "delegate", "action", "lambda", "anonimo", "wpf", "dispatcher", "paralelo", "tpl", "threadpool"]),
+            Keywords: ["task", "tarea", "hilo", "thread", "async", "await", "asincron", "delegado", "delegate", "action", "lambda", "anonimo", "wpf", "dispatcher", "paralelo", "tpl", "threadpool"]) { LabUrl = "laboratorio/concurrencia" },
 
         new(
             Slug: "blazor",

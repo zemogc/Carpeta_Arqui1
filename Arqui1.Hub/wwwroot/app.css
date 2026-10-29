@@ -60,6 +60,9 @@ code, pre { font-family: var(--mono); }
 .nav-link:hover { background: var(--panel); text-decoration: none; }
 .nav-link.active { background: linear-gradient(90deg, rgba(124,108,255,.25), rgba(34,211,238,.08)); box-shadow: inset 3px 0 0 var(--accent); }
 .sidebar-footer { margin-top: auto; font-size: 12px; color: var(--muted); padding: 10px; }
+.brand-row { display: flex; align-items: center; justify-content: space-between; }
+.nav-items { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.nav-toggle, .nav-toggle-btn { display: none; }
 
 .content { padding: 34px 44px 60px; max-width: 1180px; width: 100%; }
 
@@ -190,15 +193,22 @@ input[type=text]:focus, select:focus, textarea:focus { outline: 2px solid var(--
 
 @media (max-width: 900px) {
     .shell { grid-template-columns: 1fr; }
-    .sidebar { position: static; height: auto; flex-direction: row; flex-wrap: wrap; }
-    .nav-section, .sidebar-footer { display: none; }
+    .sidebar { position: sticky; top: 0; z-index: 10; height: auto; padding: 12px 16px; gap: 0; }
+    .brand { padding: 0; }
+    .nav-toggle-btn {
+        display: grid; place-items: center; width: 42px; height: 42px; cursor: pointer;
+        border: 1px solid var(--border); border-radius: 10px; font-size: 20px; color: var(--text);
+    }
+    .nav-items { display: none; padding-top: 12px; max-height: calc(100vh - 70px); overflow-y: auto; }
+    .nav-toggle:checked ~ .nav-items { display: flex; }
     .content { padding: 22px 16px; }
     .stats, .two-col, .form-row { grid-template-columns: 1fr 1fr; }
     .hero { padding: 26px 22px; }
     .hero h1 { font-size: 30px; }
 }
 @media (max-width: 600px) {
-    .stats, .two-col, .form-row { grid-template-columns: 1fr; }
+    .two-col, .form-row { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: 1fr 1fr; gap: 10px; }
 }
 
 /* ---------- Tablas y laboratorios ---------- */

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFApp"
         mc:Ignorable="d"
-        Title="Laboratorio de Tasks" Height="520" Width="860"
+        Title="Laboratorio de Tasks" Height="540" Width="980"
         Background="#0F172A" FontFamily="Segoe UI" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <Style TargetType="Button">
@@ -64,7 +64,14 @@
 
         <Border Grid.Row="1" Grid.Column="1" Background="#1E293B" CornerRadius="10" Padding="4">
             <ListBox x:Name="Log" Background="Transparent" BorderThickness="0"
-                     Foreground="#E2E8F0" FontFamily="Cascadia Mono, Consolas" FontSize="13"/>
+                     Foreground="#E2E8F0" FontFamily="Cascadia Mono, Consolas" FontSize="13"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" TextWrapping="Wrap" Margin="0,2"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </Border>
 
         <Label x:Name="Messagers" Grid.Row="2" Grid.ColumnSpan="2" Margin="0,14,0,0"

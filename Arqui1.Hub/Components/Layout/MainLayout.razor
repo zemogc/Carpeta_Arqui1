@@ -1,0 +1,44 @@
+﻿@inherits LayoutComponentBase
+
+<div class="shell">
+    <nav class="sidebar">
+        <a class="brand" href="">
+            <div class="brand-logo">A1</div>
+            <div>
+                <div class="brand-name">Arqui1 Hub</div>
+                <div class="brand-sub">Laboratorio de .NET 10</div>
+            </div>
+        </a>
+
+        <NavLink class="nav-link" href="" Match="NavLinkMatch.All">🏠 Inicio</NavLink>
+        <NavLink class="nav-link" href="tutor">🤖 Tutor IA</NavLink>
+
+        <div class="nav-section">Laboratorios</div>
+        <NavLink class="nav-link" href="laboratorio/inyeccion">🧪 Contenedor DI en vivo</NavLink>
+        <NavLink class="nav-link" href="laboratorio/ascii">🔤 Arte ASCII</NavLink>
+
+        <div class="nav-section">Lecciones</div>
+        @foreach (var lesson in LessonCatalog.All)
+        {
+            <NavLink class="nav-link" href="@($"lecciones/{lesson.Slug}")">@lesson.Icon @ShortTitle(lesson)</NavLink>
+        }
+
+        <div class="sidebar-footer">
+            <a href="@LessonCatalog.RepositoryUrl" target="_blank" rel="noopener">Código en GitHub ↗</a>
+        </div>
+    </nav>
+
+    <main class="content">
+        @Body
+    </main>
+</div>
+
+<div id="blazor-error-ui" data-nosnippet>
+    Ocurrió un error inesperado.
+    <a href="." class="reload">Recargar</a>
+    <span class="dismiss">🗙</span>
+</div>
+
+@code {
+    private static string ShortTitle(Lesson lesson) => lesson.Title.Split(':')[0];
+}

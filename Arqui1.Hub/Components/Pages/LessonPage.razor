@@ -41,7 +41,11 @@ else
                 <h3>Ejecútalo</h3>
                 <pre class="code terminal">$ @lesson.RunCommand</pre>
                 <div class="btn-row" style="margin-top:14px">
-                    <a class="btn" href="@($"tutor?q={Uri.EscapeDataString($"Explícame la lección \"{lesson.Title}\" con un ejemplo nuevo")}")">🤖 Pedir otra explicación</a>
+                    @if (lesson.LabUrl is not null)
+                    {
+                        <a class="btn" href="@lesson.LabUrl">🧪 Abrir laboratorio</a>
+                    }
+                    <a class="btn btn-ghost" href="@($"tutor?q={Uri.EscapeDataString($"Explícame la lección \"{lesson.Title}\" con un ejemplo nuevo")}")">🤖 Pedir otra explicación</a>
                     <a class="btn btn-ghost" href="@SourceUrl" target="_blank" rel="noopener">Ver en GitHub ↗</a>
                 </div>
             </div>

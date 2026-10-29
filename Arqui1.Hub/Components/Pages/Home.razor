@@ -19,7 +19,7 @@
 <div class="stats">
     <div class="stat"><div class="stat-value">@LessonCatalog.All.Count</div><div class="stat-label">Lecciones</div></div>
     <div class="stat"><div class="stat-value">@LessonCatalog.All.Sum(l => l.Concepts.Count)</div><div class="stat-label">Conceptos cubiertos</div></div>
-    <div class="stat"><div class="stat-value">2</div><div class="stat-label">Laboratorios interactivos</div></div>
+    <div class="stat"><div class="stat-value">@LessonCatalog.All.Count(l => l.LabUrl is not null)</div><div class="stat-label">Laboratorios interactivos</div></div>
     <div class="stat">
         <div class="stat-value" style="font-size:18px; padding-top:6px">
             <span class="badge @(Tutor.IsOnline ? "online" : "")"><span class="dot"></span>@Tutor.EngineName</span>

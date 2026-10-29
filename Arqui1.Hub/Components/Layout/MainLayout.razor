@@ -2,32 +2,38 @@
 
 <div class="shell">
     <nav class="sidebar">
-        <a class="brand" href="">
-            <div class="brand-logo">A1</div>
-            <div>
-                <div class="brand-name">Arqui1 Hub</div>
-                <div class="brand-sub">Laboratorio de .NET 10</div>
+        <div class="brand-row">
+            <a class="brand" href="">
+                <div class="brand-logo">A1</div>
+                <div>
+                    <div class="brand-name">Arqui1 Hub</div>
+                    <div class="brand-sub">Laboratorio de .NET 10</div>
+                </div>
+            </a>
+            @* El layout se renderiza en el servidor sin interactividad: el menú móvil se pliega solo con CSS. *@
+            <label for="nav-toggle" class="nav-toggle-btn" aria-label="Abrir menú">☰</label>
+        </div>
+        <input type="checkbox" id="nav-toggle" class="nav-toggle" />
+        <div class="nav-items">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">🏠 Inicio</NavLink>
+            <NavLink class="nav-link" href="tutor">🤖 Tutor IA</NavLink>
+            <NavLink class="nav-link" href="autoevaluacion">🎯 Autoevaluación</NavLink>
+
+            <div class="nav-section">Laboratorios</div>
+            <NavLink class="nav-link" href="laboratorio/inyeccion">🧪 Contenedor DI en vivo</NavLink>
+            <NavLink class="nav-link" href="laboratorio/polimorfismo">🧱 Nómina polimórfica</NavLink>
+            <NavLink class="nav-link" href="laboratorio/concurrencia">⚡ Task.WhenAll</NavLink>
+            <NavLink class="nav-link" href="laboratorio/ascii">🔤 Arte ASCII</NavLink>
+
+            <div class="nav-section">Lecciones</div>
+            @foreach (var lesson in LessonCatalog.All)
+            {
+                <NavLink class="nav-link" href="@($"lecciones/{lesson.Slug}")">@lesson.Icon @ShortTitle(lesson)</NavLink>
+            }
+
+            <div class="sidebar-footer">
+                <a href="@LessonCatalog.RepositoryUrl" target="_blank" rel="noopener">Código en GitHub ↗</a>
             </div>
-        </a>
-
-        <NavLink class="nav-link" href="" Match="NavLinkMatch.All">🏠 Inicio</NavLink>
-        <NavLink class="nav-link" href="tutor">🤖 Tutor IA</NavLink>
-        <NavLink class="nav-link" href="autoevaluacion">🎯 Autoevaluación</NavLink>
-
-        <div class="nav-section">Laboratorios</div>
-        <NavLink class="nav-link" href="laboratorio/inyeccion">🧪 Contenedor DI en vivo</NavLink>
-        <NavLink class="nav-link" href="laboratorio/polimorfismo">🧱 Nómina polimórfica</NavLink>
-        <NavLink class="nav-link" href="laboratorio/concurrencia">⚡ Task.WhenAll</NavLink>
-        <NavLink class="nav-link" href="laboratorio/ascii">🔤 Arte ASCII</NavLink>
-
-        <div class="nav-section">Lecciones</div>
-        @foreach (var lesson in LessonCatalog.All)
-        {
-            <NavLink class="nav-link" href="@($"lecciones/{lesson.Slug}")">@lesson.Icon @ShortTitle(lesson)</NavLink>
-        }
-
-        <div class="sidebar-footer">
-            <a href="@LessonCatalog.RepositoryUrl" target="_blank" rel="noopener">Código en GitHub ↗</a>
         </div>
     </nav>
 

@@ -1,0 +1,175 @@
+@page "/tutor"
+@rendermode InteractiveServer
+@implements IDisposable
+@using Anthropic.Exceptions
+@using Markdig
+@inject ITutorService TutorService
+@inject ILogger<Tutor> Logger
+
+<PageTitle>Tutor IA · Arqui1 Hub</PageTitle>
+
+<div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap">
+    <div>
+        <div class="eyebrow">🤖 Tutor IA</div>
+        <h1 class="page-title">Pregúntale lo que quieras del curso</h1>
+    </div>
+    <span class="badge @(TutorService.IsOnline ? "online" : "")" style="margin-top:12px">
+        <span class="dot"></span>@(TutorService.IsOnline ? $"Claude · {TutorService.EngineName}" : TutorService.EngineName)
+    </span>
+</div>
+
+<div class="chat">
+    <div class="chat-log">
+        @if (turns.Count == 0)
+        {
+            <div class="panel">
+                <p style="margin-top:0">
+                    Conozco las <strong>@LessonCatalog.All.Count lecciones</strong> del repositorio y su código.
+                    Pídeme que te explique un concepto, que revise un fragmento con errores o que te proponga un ejercicio.
+                </p>
+                @if (!TutorService.IsOnline)
+                {
+                    <div class="callout">
+                        Estás en <strong>modo sin conexión</strong>: respondo con el contenido de las lecciones.
+                        Para conversar con Claude ejecuta
+                        <code>dotnet user-secrets set Anthropic:ApiKey &lt;tu-key&gt; --project Arqui1.Hub</code>.
+                    </div>
+                }
+            </div>
+            <div class="suggestions">
+                @foreach (var suggestion in Suggestions)
+                {
+                    <button class="suggestion" @onclick="() => SendAsync(suggestion)">@suggestion</button>
+                }
+            </div>
+        }
+
+        @foreach (var turn in turns)
+        {
+            <div class="msg @(turn.Role == ChatRole.User ? "user" : "assistant")">
+                <div class="avatar">@(turn.Role == ChatRole.User ? "🧑‍💻" : "✨")</div>
+                <div class="bubble">@((MarkupString)Markdown.ToHtml(turn.Text, Pipeline))</div>
+            </div>
+        }
+
+        @if (streaming is not null)
+        {
+            <div class="msg assistant">
+                <div class="avatar">✨</div>
+                <div class="bubble typing">@((MarkupString)Markdown.ToHtml(streaming.ToString(), Pipeline))</div>
+            </div>
+        }
+
+        @if (error is not null)
+        {
+            <div class="callout">@error</div>
+        }
+    </div>
+
+    <form class="composer" @onsubmit="() => SendAsync(draft)">
+        <textarea placeholder="Ej: ¿Cuál es la diferencia entre una clase abstracta y una interfaz?"
+                  @bind="draft" @bind:event="oninput" disabled="@Busy"></textarea>
+        @if (Busy)
+        {
+            <button type="button" class="btn btn-ghost" @onclick="Stop">■ Detener</button>
+        }
+        else
+        {
+            <button type="submit" class="btn" disabled="@string.IsNullOrWhiteSpace(draft)">Enviar</button>
+        }
+    </form>
+</div>
+
+@code {
+    // Markdown del modelo → HTML, sin permitir HTML crudo en la respuesta.
+    private static readonly MarkdownPipeline Pipeline = new MarkdownPipelineBuilder()
+        .UseAdvancedExtensions()
+        .DisableHtml()
+        .Build();
+
+    private static readonly string[] Suggestions =
+    [
+        "¿Por qué ProductService recibe IEnumerable<IUserActionWriter>?",
+        "Explícame la diferencia entre virtual y abstract",
+        "¿Qué pasa si toco un control WPF desde una Task?",
+        "Dame un ejercicio de herencia con Product y Book",
+    ];
+
+    [SupplyParameterFromQuery(Name = "q")] public string? InitialQuestion { get; set; }
+
+    private readonly List<ChatTurn> turns = [];
+    private System.Text.StringBuilder? streaming;
+    private CancellationTokenSource? cts;
+    private string draft = string.Empty;
+    private string? error;
+
+    private bool Busy => streaming is not null;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !string.IsNullOrWhiteSpace(InitialQuestion))
+            await SendAsync(InitialQuestion);
+    }
+
+    private async Task SendAsync(string question)
+    {
+        if (Busy || string.IsNullOrWhiteSpace(question))
+            return;
+
+        error = null;
+        draft = string.Empty;
+        turns.Add(new ChatTurn(ChatRole.User, question.Trim()));
+        streaming = new System.Text.StringBuilder();
+        cts = new CancellationTokenSource();
+        StateHasChanged();
+
+        try
+        {
+            await foreach (var chunk in TutorService.AskAsync(turns, cts.Token))
+            {
+                streaming.Append(chunk);
+                StateHasChanged();
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            streaming.Append("\n\n_(respuesta detenida)_");
+        }
+        catch (AnthropicUnauthorizedException)
+        {
+            error = "La API key de Anthropic no es válida. Revisa el valor de Anthropic:ApiKey.";
+        }
+        catch (AnthropicRateLimitException)
+        {
+            error = "Se alcanzó el límite de peticiones de la API. Espera unos segundos e inténtalo de nuevo.";
+        }
+        catch (Anthropic5xxException)
+        {
+            error = "La API de Anthropic tuvo un problema temporal. Inténtalo de nuevo en un momento.";
+        }
+        catch (AnthropicApiException ex)
+        {
+            Logger.LogError(ex, "Error de la API de Anthropic");
+            error = $"La API respondió con un error: {ex.Message}";
+        }
+        catch (AnthropicIOException ex)
+        {
+            Logger.LogError(ex, "Error de red al llamar a Anthropic");
+            error = "No se pudo conectar con la API de Anthropic. Revisa tu conexión a internet.";
+        }
+
+        var answer = streaming.ToString().Trim();
+        if (answer.Length > 0)
+            turns.Add(new ChatTurn(ChatRole.Assistant, answer));
+        else if (error is not null)
+            turns.RemoveAt(turns.Count - 1); // para que el historial siga alternando usuario/asistente
+
+        streaming = null;
+        cts.Dispose();
+        cts = null;
+    }
+
+    private void Stop() => cts?.Cancel();
+
+    public void Dispose() => cts?.Cancel();
+}

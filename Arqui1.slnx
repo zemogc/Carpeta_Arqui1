@@ -1,4 +1,8 @@
 <Solution>
+  <Folder Name="/Arqui1.Hub/">
+    <Project Path="Arqui1.Hub.Tests/Arqui1.Hub.Tests.csproj" />
+    <Project Path="Arqui1.Hub/Arqui1.Hub.csproj" />
+  </Folder>
   <Folder Name="/Demo01/">
     <Project Path="Demo01/MyConsoleApp/MyConsoleApp.csproj" />
     <Project Path="Demo01/MyLibrary/MyLibrary.csproj" />

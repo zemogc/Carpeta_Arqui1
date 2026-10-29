@@ -1,0 +1,17 @@
+<div class="panel">
+    <h3>@Title</h3>
+    @{ var lines = Lines.ToList(); }
+    @if (lines.Count == 0)
+    {
+        <pre class="code terminal empty">(sin salida)</pre>
+    }
+    else
+    {
+        <pre class="code terminal">@string.Join("\n", lines.Select(l => l.Text))</pre>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public IEnumerable<LabLine> Lines { get; set; } = [];
+}

@@ -1,0 +1,29 @@
+<Solution>
+  <Folder Name="/Demo01/">
+    <Project Path="Demo01/MyConsoleApp/MyConsoleApp.csproj" />
+    <Project Path="Demo01/MyLibrary/MyLibrary.csproj" />
+  </Folder>
+  <Folder Name="/Demo02/">
+    <Project Path="Demo02/MyLibrary/MyLibrary.csproj" />
+  </Folder>
+  <Folder Name="/HelloWorld/">
+    <Project Path="HelloWorld/HelloWorld.csproj" />
+  </Folder>
+  <Folder Name="/HelloWorldOld/">
+    <Project Path="HelloWorldOld/HelloWorldOld.csproj" />
+  </Folder>
+  <Folder Name="/LabScript/">
+    <Project Path="LabScript/LabScript/LabScript.csproj" />
+  </Folder>
+  <Folder Name="/MyConsole/">
+    <Project Path="MyConsole/MyConsole.csproj" />
+  </Folder>
+  <Folder Name="/NorthWind/">
+    <Project Path="NorthWind/NorthWind.ConsoleApp/NorthWind.ConsoleApp.csproj" />
+    <Project Path="NorthWind/NorthWind.Entities/NorthWind.Entities.csproj" />
+    <Project Path="NorthWind/NorthWind.Writers/NorthWind.Writers.csproj" />
+  </Folder>
+  <Folder Name="/WPFApp/">
+    <Project Path="WPFApp/WPFApp/WPFApp.csproj" />
+  </Folder>
+</Solution>

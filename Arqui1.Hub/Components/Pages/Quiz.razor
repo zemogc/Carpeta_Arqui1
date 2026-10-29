@@ -1,0 +1,129 @@
+@page "/autoevaluacion"
+@rendermode InteractiveServer
+
+<PageTitle>Autoevaluación · Arqui1 Hub</PageTitle>
+
+<div class="eyebrow">🎯 Autoevaluación</div>
+<h1 class="page-title">¿Cuánto aprendiste?</h1>
+<p class="page-lead">
+    Preguntas sobre el código real del repositorio. Si fallas una, verás la explicación y podrás
+    pedirle al Tutor IA que te lo explique de otra forma.
+</p>
+
+<div class="panel" style="margin-bottom:18px; display:flex; gap:14px; align-items:flex-end; flex-wrap:wrap">
+    <label class="field" style="min-width:280px">
+        Lección
+        <select @bind="lessonFilter" @bind:after="NewRound">
+            <option value="">Todas las lecciones (@QuizBank.All.Count preguntas)</option>
+            @foreach (var lesson in LessonCatalog.All)
+            {
+                <option value="@lesson.Slug">@lesson.Icon @lesson.Title</option>
+            }
+        </select>
+    </label>
+    <button class="btn btn-ghost" @onclick="NewRound">↻ Otra ronda</button>
+    @if (checkedAnswers)
+    {
+        <div class="score @(Score == questions.Count ? "perfect" : "")">
+            <strong>@Score / @questions.Count</strong>
+            <span>@Verdict</span>
+        </div>
+    }
+</div>
+
+<div class="stack">
+    @for (int i = 0; i < questions.Count; i++)
+    {
+        var index = i;
+        var item = questions[index];
+        var state = !checkedAnswers ? "" : item.Selected == item.CorrectPosition ? "right" : "wrong";
+        <div class="panel quiz-card @state">
+            <div class="quiz-meta">Pregunta @(index + 1) · @LessonCatalog.Find(item.Question.LessonSlug)?.Title</div>
+            <h3>@item.Question.Prompt</h3>
+            <div class="quiz-options">
+                @for (int o = 0; o < item.Order.Count; o++)
+                {
+                    var position = o;
+                    var optionClass = !checkedAnswers ? (item.Selected == position ? "selected" : "")
+                        : position == item.CorrectPosition ? "correct"
+                        : item.Selected == position ? "incorrect" : "";
+                    <button class="quiz-option @optionClass" disabled="@checkedAnswers" @onclick="() => item.Selected = position">
+                        <span class="quiz-letter">@((char)('A' + position))</span>
+                        @item.Question.Options[item.Order[position]]
+                    </button>
+                }
+            </div>
+            @if (checkedAnswers)
+            {
+                <div class="callout @(state == "right" ? "ok" : "")" style="margin-top:12px">
+                    @(state == "right" ? "✅ ¡Correcto! " : "❌ ")@item.Question.Explanation
+                </div>
+                @if (state == "wrong")
+                {
+                    <a class="btn btn-ghost" style="margin-top:12px" href="@TutorLink(item)">🤖 Explícamelo con el tutor</a>
+                }
+            }
+        </div>
+    }
+</div>
+
+<div class="btn-row" style="margin-top:18px">
+    @if (!checkedAnswers)
+    {
+        <button class="btn" @onclick="() => checkedAnswers = true" disabled="@(questions.Any(q => q.Selected is null))">
+            Comprobar respuestas (@questions.Count(q => q.Selected is not null)/@questions.Count)
+        </button>
+    }
+    else
+    {
+        <button class="btn" @onclick="NewRound">↻ Otra ronda</button>
+    }
+</div>
+
+@code {
+    private sealed class Item(QuizQuestion question, IReadOnlyList<int> order)
+    {
+        public QuizQuestion Question { get; } = question;
+        /// <summary>Order[posición mostrada] = índice de la opción original.</summary>
+        public IReadOnlyList<int> Order { get; } = order;
+        public int CorrectPosition => Order.ToList().IndexOf(Question.CorrectIndex);
+        public int? Selected { get; set; }
+    }
+
+    private const int QuestionsPerRound = 7;
+
+    private string lessonFilter = string.Empty;
+    private List<Item> questions = [];
+    private bool checkedAnswers;
+
+    private int Score => questions.Count(q => q.Selected == q.CorrectPosition);
+
+    private string Verdict => ((double)Score / questions.Count) switch
+    {
+        >= 1 => "¡Perfecto! 🏆",
+        >= 0.7 => "¡Muy bien!",
+        >= 0.4 => "Vas por buen camino",
+        _ => "Repasa las lecciones y vuelve a intentarlo",
+    };
+
+    protected override void OnInitialized() => NewRound();
+
+    private void NewRound()
+    {
+        var pool = string.IsNullOrEmpty(lessonFilter) ? QuizBank.All : QuizBank.ForLesson(lessonFilter).ToList();
+        questions = pool
+            .OrderBy(_ => Random.Shared.Next())
+            .Take(QuestionsPerRound)
+            .Select(q => new Item(q, Enumerable.Range(0, q.Options.Count).OrderBy(_ => Random.Shared.Next()).ToList()))
+            .ToList();
+        checkedAnswers = false;
+    }
+
+    private static string TutorLink(Item item)
+    {
+        var chosen = item.Selected is { } s ? item.Question.Options[item.Order[s]] : "";
+        var question = $"En la autoevaluación me preguntaron: \"{item.Question.Prompt}\". Respondí \"{chosen}\" y la correcta era " +
+                       $"\"{item.Question.Options[item.Question.CorrectIndex]}\". ¿Por qué? Explícamelo con un ejemplo.";
+        return $"tutor?q={Uri.EscapeDataString(question)}";
+    }
+}

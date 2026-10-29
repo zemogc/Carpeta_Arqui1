@@ -223,3 +223,26 @@ input[type=text]:focus, select:focus, textarea:focus { outline: 2px solid var(--
 @media (max-width: 600px) {
     .timeline-row { grid-template-columns: 1fr; gap: 4px; }
 }
+
+/* ---------- Autoevaluación ---------- */
+.score { display: flex; flex-direction: column; margin-left: auto; text-align: right; }
+.score strong { font-size: 26px; }
+.score span { color: var(--muted); font-size: 13px; }
+.score.perfect strong { color: var(--ok); }
+.quiz-card.right { border-color: rgba(52,211,153,.5); }
+.quiz-card.wrong { border-color: rgba(248,113,113,.5); }
+.quiz-meta { color: var(--accent-2); font-size: 12px; text-transform: uppercase; letter-spacing: .8px; margin-bottom: 4px; }
+.quiz-card h3 { margin: 0 0 14px; font-size: 16px; line-height: 1.45; }
+.quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.quiz-option {
+    display: flex; align-items: center; gap: 12px; text-align: left;
+    background: #0a0f1f; color: var(--text); border: 1px solid var(--border); border-radius: 10px;
+    padding: 11px 14px; font: inherit; font-size: 14px; cursor: pointer;
+}
+.quiz-option:hover:not(:disabled) { border-color: var(--accent); }
+.quiz-option:disabled { cursor: default; }
+.quiz-option.selected { border-color: var(--accent); background: rgba(124,108,255,.15); }
+.quiz-option.correct { border-color: var(--ok); background: rgba(52,211,153,.12); }
+.quiz-option.incorrect { border-color: var(--danger); background: rgba(248,113,113,.12); }
+.quiz-letter { flex: none; width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; background: var(--panel-2); font-weight: 700; font-size: 13px; }
+@media (max-width: 900px) { .quiz-options { grid-template-columns: 1fr; } }

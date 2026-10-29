@@ -8,7 +8,7 @@
 ![C# 14](https://img.shields.io/badge/C%23-14-239120?logo=csharp&logoColor=white)
 ![Blazor](https://img.shields.io/badge/Blazor-Interactive_Server-7c6cff)
 ![Claude](https://img.shields.io/badge/IA-Claude_Opus_5.5-d97757)
-![Pruebas](https://img.shields.io/badge/pruebas-26_pasan-34d399)
+![Pruebas](https://img.shields.io/badge/pruebas-29_pasan-34d399)
 
 ![Inicio de Arqui1 Hub](docs/capturas/inicio.png)
 
@@ -20,6 +20,7 @@ El repositorio empezó como la carpeta de prácticas del curso: un proyecto por 
 
 - 📚 **7 lecciones** explicadas, con los puntos clave, el código y el comando para ejecutarlas.
 - 🧪 **4 laboratorios interactivos** que usan las bibliotecas reales del repositorio, no copias: inyección de dependencias, polimorfismo, concurrencia con `Task.WhenAll` y arte ASCII.
+- 🎯 **Autoevaluación** con 21 preguntas sobre el código real; cada fallo trae su explicación y un botón para preguntarle al tutor.
 - 🤖 **Tutor IA** con Claude que conoce cada carpeta y su código. Sin API key funciona en modo sin conexión.
 
 ## Arranque rápido
@@ -52,6 +53,12 @@ También sirve la variable de entorno `ANTHROPIC_API_KEY`. En `Arqui1.Hub/appset
 Pregunta lo que quieras del curso. Con Claude, la respuesta llega en streaming; en modo sin conexión, el tutor busca la lección más relacionada.
 
 ![Tutor IA respondiendo sobre inyección de dependencias](docs/capturas/tutor-ia.png)
+
+### 🎯 Autoevaluación
+
+Siete preguntas por ronda, de todas las lecciones o de una sola. Las opciones se barajan en cada ronda, y cada fallo lleva un botón que manda tu respuesta al Tutor IA para que te lo explique de otra forma.
+
+![Autoevaluación con resultados](docs/capturas/autoevaluacion.png)
 
 ### 🧪 Contenedor DI en vivo
 
@@ -112,7 +119,9 @@ Cuatro formas de crear tareas (delegado `Action`, método anónimo, lambda y `Ta
 
 ```
 Arqui1.Hub/
-├── Data/LessonCatalog.cs          Las lecciones. Alimentan las páginas y el prompt del tutor
+├── Data/
+│   ├── LessonCatalog.cs           Las lecciones. Alimentan las páginas y el prompt del tutor
+│   └── QuizBank.cs                Preguntas de la autoevaluación
 ├── Services/
 │   ├── DependencyLab.cs           ServiceCollection real con los contratos de NorthWind.Entities
 │   ├── ConcurrencyLab.cs          Ejecución secuencial vs. Task.WhenAll con tiempos medidos
@@ -139,7 +148,7 @@ Detalles del tutor con Claude:
 dotnet test Arqui1.Hub.Tests
 ```
 
-26 pruebas con xUnit. Entre ellas, la petición que el tutor envía a la API se verifica con un `HttpMessageHandler` falso (modelo, streaming, fallbacks, historial y prompt), así que se prueba sin gastar créditos.
+29 pruebas con xUnit. Entre ellas, la petición que el tutor envía a la API se verifica con un `HttpMessageHandler` falso (modelo, streaming, fallbacks, historial y prompt), así que se prueba sin gastar créditos.
 
 ## Estructura del repositorio
 

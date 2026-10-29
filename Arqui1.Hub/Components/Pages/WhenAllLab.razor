@@ -1,0 +1,121 @@
+@page "/laboratorio/concurrencia"
+@rendermode InteractiveServer
+@implements IDisposable
+
+<PageTitle>Concurrencia · Arqui1 Hub</PageTitle>
+
+<div class="eyebrow">⚡ Laboratorio · WPFApp</div>
+<h1 class="page-title">Secuencial vs. Task.WhenAll</h1>
+<p class="page-lead">
+    Cinco operaciones de E/S simuladas con <code>Task.Delay</code>. Ejecútalas una tras otra y después todas a la vez:
+    el tiempo total pasa de la <strong>suma</strong> de las duraciones a la duración de la <strong>más lenta</strong>.
+</p>
+
+<div class="btn-row" style="margin-bottom:18px">
+    <button class="btn" @onclick="() => RunAsync(sequential)" disabled="@running">▶ Secuencial</button>
+    <button class="btn" @onclick="() => RunAsync(concurrent)" disabled="@running">⚡ Concurrente (Task.WhenAll)</button>
+</div>
+
+<div class="two-col">
+    @foreach (var run in new[] { sequential, concurrent })
+    {
+        <div class="panel">
+            <h3>@run.Title</h3>
+            <pre class="code" style="margin-bottom:16px">@run.Code</pre>
+            <div class="timeline">
+                @foreach (var job in run.Jobs)
+                {
+                    <div class="timeline-row">
+                        <div class="timeline-label">@job.Job.Name <span class="muted">· @job.Job.DurationMs ms</span></div>
+                        <div class="timeline-track">
+                            @if (job.Started)
+                            {
+                                var end = job.Done ? job.FinishedAtMs : run.NowMs;
+                                <div class="timeline-bar @(job.Done ? "done" : "")"
+                                     style="left:@Pct(job.StartedAtMs)%; width:@Pct(end - job.StartedAtMs)%"></div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="stat-inline">
+                <span>Tiempo total</span>
+                <strong>@(run.ElapsedMs is { } ms ? $"{ms:N0} ms" : run.Clock is not null ? "corriendo…" : "—")</strong>
+            </div>
+        </div>
+    }
+</div>
+
+@if (sequential.ElapsedMs is { } seqMs && concurrent.ElapsedMs is { } conMs)
+{
+    <div class="callout ok" style="margin-top:18px">
+        Con <code>Task.WhenAll</code> fue <strong>@((seqMs / conMs).ToString("0.0"))×</strong> más rápido
+        (@seqMs.ToString("N0") ms → @conMs.ToString("N0") ms). Mientras <code>Task.Delay</code> espera no hay ningún
+        hilo bloqueado: por eso cinco esperas caben en el tiempo de la más larga.
+    </div>
+}
+
+@code {
+    // Escala de la línea de tiempo: la suma de las duraciones con un pequeño margen.
+    private static readonly double ScaleMs = ConcurrencyLab.DefaultJobs.Sum(j => j.DurationMs) * 1.05;
+
+    private sealed class Run(string title, string code, bool isConcurrent)
+    {
+        public string Title { get; } = title;
+        public string Code { get; } = code;
+        public bool IsConcurrent { get; } = isConcurrent;
+        public List<JobProgress> Jobs { get; set; } = ConcurrencyLab.CreateProgress(ConcurrencyLab.DefaultJobs);
+        public System.Diagnostics.Stopwatch? Clock { get; set; }
+        public double? ElapsedMs { get; set; }
+        public double NowMs => Clock?.Elapsed.TotalMilliseconds ?? ElapsedMs ?? 0;
+    }
+
+    private readonly Run sequential = new("Secuencial", """
+        foreach (var job in jobs)
+            await RunJobAsync(job);
+        """, isConcurrent: false);
+
+    private readonly Run concurrent = new("Concurrente", """
+        await Task.WhenAll(
+            jobs.Select(job => RunJobAsync(job)));
+        """, isConcurrent: true);
+
+    private readonly CancellationTokenSource cts = new();
+    private bool running;
+
+    private static string Pct(double ms) =>
+        (Math.Clamp(ms, 0, ScaleMs) / ScaleMs * 100).ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
+
+    private async Task RunAsync(Run run)
+    {
+        running = true;
+        run.Jobs = ConcurrencyLab.CreateProgress(ConcurrencyLab.DefaultJobs);
+        run.ElapsedMs = null;
+        run.Clock = System.Diagnostics.Stopwatch.StartNew();
+
+        // Redibuja cada 50 ms mientras las tareas avanzan.
+        using var ticker = new PeriodicTimer(TimeSpan.FromMilliseconds(50));
+        var work = run.IsConcurrent
+            ? ConcurrencyLab.RunConcurrentAsync(run.Jobs, cts.Token)
+            : ConcurrencyLab.RunSequentialAsync(run.Jobs, cts.Token);
+
+        try
+        {
+            while (!work.IsCompleted && await ticker.WaitForNextTickAsync(cts.Token))
+                StateHasChanged();
+            run.ElapsedMs = await work;
+        }
+        catch (OperationCanceledException)
+        {
+            return; // la página se cerró
+        }
+        finally
+        {
+            run.Clock = null;
+            running = false;
+        }
+    }
+
+    // Solo se cancela: el bucle de RunAsync puede seguir leyendo cts.Token mientras termina.
+    public void Dispose() => cts.Cancel();
+}
